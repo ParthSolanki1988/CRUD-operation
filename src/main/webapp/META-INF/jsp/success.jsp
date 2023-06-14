@@ -69,7 +69,6 @@
                           <td>${user.userName}</td>
                           <td>${user.email}</td>
                           <td>
-                              <a href="#" class="view" title="View" data-toggle="tooltip"><i class="material-icons">&#xE417;</i></a>
                               <a href="http://localhost:8080/api/v1/users/updated/${user.id}" class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a>
                               <a href="http://localhost:8080/api/v1/users/deleted/${user.id}" class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
                           </td>
@@ -81,9 +80,9 @@
                   <div class="hint-text">Users entries :  <b>${usercount}</b></div>
                   <ul class="pagination">
                       <li class="page-item disabled"><a href="#">Previous</a></li>
-                      <li class="page-item"><a href="#" class="page-link" class="page-link">1</a></li>
+                      <li class="page-item active"><a href="#" class="page-link">1</a></li>
                       <li class="page-item"><a href="#" class="page-link">2</a></li>
-                      <li class="page-item active"><a href="#" >3</a></li>
+                      <li class="page-item "><a href="#" class="page-link">3</a></li>
                       <li class="page-item"><a href="#" class="page-link">4</a></li>
                       <li class="page-item"><a href="#" class="page-link">5</a></li>
                       <li class="page-item"><a href="#" class="page-link">Next</a></li>
@@ -94,27 +93,5 @@
   </div>
 
 
-  <!-- <table class="table table-dark table-striped" id="table">
-    		<thead>
-    			<tr>
-    				<th>ID</th>
-    				<th>Name</th>
-    				<th>Email</th>
-    				<th>Password</th>
-    			</tr>
-    		</thead>
-    		<tbody class="table-striped">
-    			<c:forEach items="${users}" var="user">
-    				<tr>
-    					<td>${user.id}</td>
-    					<td>${user.userName}</td>
-    					<td>${user.email}</td>
-                        <td>${user.password}</td>
-    					<td><a class="btn btn-warning" href="http://localhost:8080/deleted?id=${user.id}">Delete</a>
-    						<a class="btn btn-success" href="http://localhost:8080/update?id=${user.id}">Edit</a></td>
-    				</tr>
-    			</c:forEach>
-    		</tbody>
-    	</table>-->
  </body>
 </html>

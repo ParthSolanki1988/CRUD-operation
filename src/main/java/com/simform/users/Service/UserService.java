@@ -7,10 +7,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
-
 
   @Autowired
   private UserRepository userRepository;
@@ -49,6 +49,14 @@ public class UserService {
   public void deleteById(int id){
     userRepository.deleteById(id);
   }
+  public User updateUser(User user){
+    return userRepository.save(user);
+  }
+
+  public Optional<User> findById(Integer id){
+    return userRepository.findById(id);
+  }
+
 
 
 
