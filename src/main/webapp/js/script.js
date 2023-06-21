@@ -26,3 +26,10 @@ mdb.Alert.getInstance(document.getElementById("alertExample")).update({
    		});
    	});
    });
+
+
+
+   setTimeout(() => {
+     const box = document.getElementById('message');
+     box.style.display = 'none';
+   }, 2000);

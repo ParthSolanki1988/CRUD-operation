@@ -3,6 +3,7 @@ package com.simform.users.Controller;
 import com.simform.users.Entity.User;
 import com.simform.users.Exception.UserNotfoundException;
 import com.simform.users.Service.UserService;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,22 +22,80 @@ import java.util.Optional;
 @Slf4j
 public class UserController {
 
-  private final Logger logger = LoggerFactory.getLogger(this.getClass());
   @Autowired
   BCryptPasswordEncoder passwordEncoder;
   @Autowired
   private UserService userService;
 
-
   public UserController(UserService userService) {
     this.userService = userService;
   }
 
-  //  @RequestMapping(value = "/register", method = RequestMethod.GET)
+  //  REGISTER
+
   @GetMapping("/register")
   public String showRegistrationForm() {
-    logger.info("Register Page Open....");
+    log.info("Register Page Open....");
     return "form";
+  }
+
+  @RequestMapping(path = "/loginpage", method = RequestMethod.POST)
+  public String registration(@ModelAttribute User user, ModelMap modelMap, @RequestParam("email") String email , HttpSession session) {
+    log.info("Processing On Register Page....");
+    userService.insertUser(user);
+    session.setAttribute("message" , " Registered Successfully!");
+    System.out.println(user);
+    log.info("Form Submitted Successfully!");
+    return "login";
+  }
+
+
+
+  //  LOGIN
+  @GetMapping(value = "/login")
+  public String showLoginForm() {
+    log.info("Login Page Open....");
+    return "login";
+  }
+
+  @PostMapping(value = "/login")
+  public String loginUser(@RequestParam("email") String email, @RequestParam("password") String password, ModelMap modelMap) {
+    log.info("Login Procsessing....");
+    User user1 = userService.userDetails(email);
+    if (user1 == null) {
+      log.warn("Login Failed null.....");
+      throw new UserNotfoundException();
+    }
+    String existPassword = user1.getPassword();
+    boolean passchecker = passwordEncoder.matches(password, existPassword);
+
+    if (!user1.getEmail().equals(email)) {
+      log.warn("Login Failed using email.....");
+      throw new UserNotfoundException();
+    } else if (!passchecker) {
+      log.warn("Login Failed using Password.....");
+      throw new UserNotfoundException();
+    }
+    log.info("Login Successfully....");
+    //count user
+    long countUsers = userService.countUser();
+    modelMap.addAttribute("usercount", countUsers);
+    List<User> users = userService.findAllUser();
+    modelMap.addAttribute("users", users);
+    return "success";
+  }
+
+
+  //UPDATE
+
+  @RequestMapping(path = "/updated/{id}")
+  public String update(@PathVariable Integer id, ModelMap modelMap) {
+    Optional<User> user = userService.findById(id);
+    if (user.isPresent()) {
+      modelMap.addAttribute("user", user.get());
+    }
+    return "update";
+
   }
 
   @PostMapping("/updatelogin/{id}")
@@ -55,88 +114,15 @@ public class UserController {
       }
       userService.updateUser(existingUser);
     }
-
-/*    logger.info("Welcome Page Open....");
-    System.out.println(user.getId());
-    userService.insertUser(user);*/
     return "redirect:/api/v1/users/login";
   }
 
-  @RequestMapping(value = "/login", method = RequestMethod.GET)
-  public String showLoginForm() {
-    logger.info("Login Page Open....");
-    return "login";
-  }
-
-  @RequestMapping(path = "/loginpage", method = RequestMethod.POST)
-  public String registration(@ModelAttribute User user, ModelMap modelMap, @RequestParam("email") String email) {
-    logger.info("Processing On Register Page....");
-    userService.insertUser(user);
-    System.out.println(user);
-//    String message = "Form submitted successfully.";
-//    modelMap.addAttribute("successMessage", message);
-    logger.info("Form Submitted Successfully!");
-    return "login";
-  }
-
-
-  @RequestMapping(value = "/login", method = RequestMethod.POST)
-  public String loginUser(@RequestParam("email") String email, @RequestParam("password") String password, ModelMap modelMap) {
-    logger.info("Login Procsessing....");
-    User user1 = userService.userDetails(email);
-    if (user1 == null) {
-      logger.warn("Login Failed null.....");
-      throw new UserNotfoundException();
-    }
-    String existPassword = user1.getPassword();
-//    System.out.println("Exist Password : " + existPassword);
-    boolean passchecker = passwordEncoder.matches(password, existPassword);
-//    System.out.println("At Login Time Password : " + passchecker);
-
-
-    if (!user1.getEmail().equals(email)) {
-      logger.warn("Login Failed using email.....");
-      throw new UserNotfoundException();
-    } else if (!passchecker) {
-      logger.warn("Login Failed using Password.....");
-      throw new UserNotfoundException();
-    }
-    logger.info("Login Successfully....");
-    //count user
-    long countUsers = userService.countUser();
-    modelMap.addAttribute("usercount", countUsers);
-    List<User> users = userService.findAllUser();
-    modelMap.addAttribute("users", users);
-    return "success";
-  }
-
-  @RequestMapping(path = "/updated/{id}")
-  public String update(@PathVariable Integer id, ModelMap modelMap) {
-    Optional<User> user = userService.findById(id);
-    if (user.isPresent()) {
-      modelMap.addAttribute("user", user.get());
-    }
-    return "update";
-
-
-//    updatedUser.setId(id);
-//    User updatedByIdUser = userService.updateUser(updatedUser);
-//    logger.info("Update User Into Database");
-//    //count user
-//    long countUsers = userService.countUser();
-//    modelMap.addAttribute("usercount" , countUsers);
-//    // Update the model or retrieve the updated user list
-//    List<User> users = userService.findAllUser();
-//    modelMap.addAttribute("users", users);
-////    return "success";
-//    return updatedByIdUser;
-  }
-
+//  DELETE
 
   @RequestMapping(path = "/deleted/{id}")
   public String deleteUser(@PathVariable int id, ModelMap modelMap) {
     userService.deleteById(id);
-    logger.info("Deleted User From Database");
+    log.info("Deleted User From Database");
     //count user
     long countUsers = userService.countUser();
     modelMap.addAttribute("usercount", countUsers);

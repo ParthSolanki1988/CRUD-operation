@@ -24,6 +24,8 @@ public class UserService {
     this.passwordEncoder = passwordEncoder;
   }
 
+//  INSERT
+
   public void insertUser(User user){
     System.out.println("Start saving user into db");
     /**
@@ -34,6 +36,8 @@ public class UserService {
     System.out.println("saved user successfully into db");
   }
 
+//  READ
+
   public User userDetails(String email){
     return userRepository.findByEmail(email);
   }
@@ -42,20 +46,33 @@ public class UserService {
     return userRepository.findAll();
   }
 
+  public Optional<User> findById(Integer id){
+    return userRepository.findById(id);
+  }
+
+
+//  COUNT
+
   public long countUser(){
     return userRepository.count();
   }
 
+
+//  DELETE
+
   public void deleteById(int id){
     userRepository.deleteById(id);
   }
+
+
+//  UPDATE
   public User updateUser(User user){
     return userRepository.save(user);
   }
 
-  public Optional<User> findById(Integer id){
-    return userRepository.findById(id);
-  }
+
+
+
 
 
 

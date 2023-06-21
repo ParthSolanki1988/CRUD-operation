@@ -1,5 +1,4 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" %>
-<html>
 <head>
 <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -35,6 +34,24 @@
               <div class="card" style="border-radius: 15px;">
                 <div class="card-body p-5">
                   <h2 class="text-uppercase text-center mb-5">Login Your Account</h2>
+
+                  <%
+                    String message = (String) session.getAttribute("message");
+                    if(message != null){
+
+                   %>
+
+                    <div class="alert alert-success alert-dismissible fade show" role="alert" name="message" id="message">
+                      <strong><%= message%></strong>
+                      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+
+                    <%
+                      session.removeAttribute("message");
+                     }
+
+                  %>
+
 
                   <form action="login" method="post">
 
